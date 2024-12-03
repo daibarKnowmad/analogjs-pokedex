@@ -1,6 +1,6 @@
 // /server/routes/v1/pokemon/[name].get.ts
 import { defineEventHandler } from 'h3';
-import prisma from '../../../../lib/prisma';
+import prisma from '../../../prisma';
 
 export default defineEventHandler(async (event) => {
   try {

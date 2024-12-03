@@ -1,6 +1,6 @@
 // /server/routes/v1/pokemon/[name].get.ts
 import { defineEventHandler, readBody } from 'h3';
-import prisma from '../../../../lib/prisma';
+import prisma from '../../../prisma';
 
 export default defineEventHandler(async (event) => {
   try {
@@ -13,8 +13,6 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    console.warn(body);
-
     // Añadir el Pokémon favorito a la base de datos
     const favorite = await prisma.favoritePokemon.deleteMany({
       where: {
@@ -22,8 +20,6 @@ export default defineEventHandler(async (event) => {
         name: body.name,
       },
     });
-
-    console.warn('asdasd', favorite);
 
     return {
       message: 'Pokémon eliminado de favoritos',

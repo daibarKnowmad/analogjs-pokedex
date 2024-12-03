@@ -3,6 +3,19 @@ import { Component, computed, inject, Input, OnInit } from '@angular/core';
 import { StateService } from '../core/state.service';
 import { Router } from '@angular/router';
 
+// Función para definir los slugs estáticos
+export const generateStaticParams = async () => {
+  const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
+  if (!response.ok) {
+    throw new Error('Error al obtener la lista de Pokémon');
+  }
+
+  const data = await response.json();
+  return data.results.map((pokemon: { name: string }) => ({
+    slug: pokemon.name, // Este slug debe coincidir con `params['slug']` en el loader
+  }));
+};
+
 @Component({
   selector: 'app-pokemon',
   standalone: true,
