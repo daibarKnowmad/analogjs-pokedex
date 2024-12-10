@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PokemonService } from '../services/pokemon.service';
 import { StateService } from '../core/state.service';
 
 @Component({
@@ -99,7 +98,6 @@ import { StateService } from '../core/state.service';
   ],
 })
 export default class HomeComponent implements OnInit {
-  service = inject(PokemonService);
   state = inject(StateService);
 
   list$ = this.state.list$;
@@ -107,7 +105,37 @@ export default class HomeComponent implements OnInit {
   error$ = this.state.error$;
 
   ngOnInit(): void {
-    this.state.getListAction();
+    if (!this.list$().length) {
+      // Solo se ejecuta si no hay datos prerenderizados
+      this.state.getListAction();
+    }
     this.state.getFavoritesAction();
   }
 }
+
+// Función para definir los slugs estáticos
+// export const generateStaticParams = async () => {
+//   const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=150');
+//   if (!response.ok) {
+//     throw new Error('Error al obtener la lista de Pokémon');
+//   }
+
+//   const data = await response.json();
+
+//   return data.results.map((pokemon: { name: string }) => ({
+//     slug: pokemon.name, // Este slug debe coincidir con `params['slug']` en el loader
+//   }));
+// };
+
+// // Generar contenido estático para la página principal
+// export const generateStaticParams = async () => {
+//   const stateService = new StateService();
+//   await stateService.getListAction(); // Llama a la API y cachea los datos
+//   return []; // No necesita parámetros dinámicos
+// };
+
+// Metadatos para SEO
+export const generateMetadata = async () => ({
+  title: 'Pokédex - Home',
+  description: 'Explora la lista de Pokémon con esta Pokédex interactiva.',
+});

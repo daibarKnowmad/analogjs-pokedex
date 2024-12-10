@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { PokemonService } from '../services/pokemon.service';
 import { catchError, first, of, tap } from 'rxjs';
+import { Meta, Title } from '@angular/platform-browser';
 
 interface AppState {
   list: any[];
@@ -13,7 +14,8 @@ interface AppState {
 @Injectable({ providedIn: 'root' })
 export class StateService {
   private service = inject(PokemonService);
-  constructor() {}
+  private meta = inject(Meta);
+  private title = inject(Title);
 
   private _state = signal<AppState>({
     list: [],
@@ -136,6 +138,14 @@ export class StateService {
     this.getPokemonEffect(name);
   }
 
+  getPokemonDetail(name: string) {
+    return this.service.getPokemon(name).pipe(
+      first(),
+      catchError(() => of(null)),
+      tap((pokemon: any | null) => pokemon)
+    );
+  }
+
   private getPokemonEffect(name: string) {
     this.service
       .getPokemon(name)
@@ -148,6 +158,12 @@ export class StateService {
   }
 
   private setPokemonReducer(pokemon: any | null) {
+    this.title.setTitle(`Pokédex - ${pokemon.name}`);
+    this.meta.addTags([
+      { name: 'description', content: `Details about ${pokemon.name}` },
+      { name: 'keywords', content: `pokemon, pokedex, ${pokemon.name}` },
+    ]);
+
     this._state.update((state) => ({
       ...state,
       pokemon,
