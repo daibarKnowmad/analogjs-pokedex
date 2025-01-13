@@ -40,6 +40,7 @@ export class StateService {
   }
 
   private getListEffect() {
+    this.title.setTitle(`Pokédex`);
     this.service
       .getPokemonList()
       .pipe(
@@ -135,6 +136,7 @@ export class StateService {
   // /////////////////////////////////////////
 
   getPokemonAction(name: string) {
+    this.removePokemonReducer();
     this.getPokemonEffect(name);
   }
 
@@ -155,6 +157,13 @@ export class StateService {
         tap((pokemon: any | null) => this.setPokemonReducer(pokemon))
       )
       .subscribe();
+  }
+
+  private removePokemonReducer() {
+    this._state.update((state) => ({
+      ...state,
+      pokemon: null,
+    }));
   }
 
   private setPokemonReducer(pokemon: any | null) {

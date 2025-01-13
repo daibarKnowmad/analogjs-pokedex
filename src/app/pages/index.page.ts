@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { StateService } from '../core/state.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -99,12 +100,14 @@ import { StateService } from '../core/state.service';
 })
 export default class HomeComponent implements OnInit {
   state = inject(StateService);
+  private title = inject(Title);
 
   list$ = this.state.list$;
   loading$ = this.state.loading$;
   error$ = this.state.error$;
 
   ngOnInit(): void {
+    this.title.setTitle(`Pokédex`);
     if (!this.list$().length) {
       // Solo se ejecuta si no hay datos prerenderizados
       this.state.getListAction();
